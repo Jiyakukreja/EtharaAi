@@ -17,15 +17,15 @@ import { fetchProjects } from '@/services/projects';
 
 const taskSchema = z.object({
   title: z.string().min(2),
-  description: z.string().optional().default(''),
+  description: z.string().default(''),
   priority: z.enum(['low', 'medium', 'high', 'urgent']),
-  dueDate: z.string().optional().default(''),
+  dueDate: z.string().default(''),
   status: z.enum(['todo', 'in-progress', 'review', 'completed']),
   projectId: z.string().min(1),
-  labels: z.string().optional().default('')
+  labels: z.string().default('')
 });
 
-type TaskFormValues = z.infer<typeof taskSchema>;
+type TaskFormValues = z.output<typeof taskSchema>;
 
 export function TasksPage() {
   const user = useAuthStore(state => state.user);
@@ -36,7 +36,7 @@ export function TasksPage() {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
-  const form = useForm<TaskFormValues>({
+  const form = useForm<z.input<typeof taskSchema>, undefined, z.output<typeof taskSchema>>({
     resolver: zodResolver(taskSchema),
     defaultValues: {
       title: '',

@@ -16,9 +16,9 @@ import { useAuthStore } from '@/store/authStore';
 
 const projectSchema = z.object({
   title: z.string().min(2),
-  description: z.string().optional().default(''),
-  color: z.string().optional().default('#7c3aed'),
-  deadline: z.string().optional().default('')
+  description: z.string().default(''),
+  color: z.string().default('#7c3aed'),
+  deadline: z.string().default('')
 });
 
 type ProjectFormValues = z.infer<typeof projectSchema>;
@@ -30,7 +30,7 @@ export function ProjectsPage() {
   const { toast } = useToast();
   const isAdmin = user?.role === 'admin';
 
-  const form = useForm<ProjectFormValues>({
+  const form = useForm<z.input<typeof projectSchema>, undefined, z.output<typeof projectSchema>>({
     resolver: zodResolver(projectSchema),
     defaultValues: { title: '', description: '', color: '#7c3aed', deadline: '' }
   });
